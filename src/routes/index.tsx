@@ -99,8 +99,7 @@ function Dashboard() {
     setFilters((f) => ({ ...f, [key]: value }));
   }, []);
 
-  // pré-cálculo apenas para garantir uso de applyFilters (filtro reativo)
-  void applyFilters;
+
 
   return (
     <div className="mx-auto flex h-screen max-h-[1080px] w-screen max-w-[1920px] flex-col gap-3 overflow-hidden p-4"
