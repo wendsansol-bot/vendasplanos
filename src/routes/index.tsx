@@ -7,7 +7,7 @@ import {
   type Filters,
   type SaleRow,
 } from "@/lib/dashboard";
-import { applyFilters, computeMetrics, uniqueValues } from "@/lib/metrics";
+import { computeMetrics, uniqueValues } from "@/lib/metrics";
 import { Header } from "@/components/dashboard/Header";
 import { FilterBar } from "@/components/dashboard/FilterBar";
 import { KpiCards } from "@/components/dashboard/KpiCards";
