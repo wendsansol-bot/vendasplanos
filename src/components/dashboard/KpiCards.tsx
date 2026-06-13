@@ -127,31 +127,34 @@ export function KpiCards({ m }: { m: Metrics }) {
 
       {/* Ritmo Necessário */}
       <Card accent="purple" icon={<Gauge size={18} />} title="Ritmo Necessário">
-        <div className="flex flex-1 items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">Faltam</p>
-            <p className="font-display text-2xl font-bold leading-tight">{formatarMoeda(m.faltaMensal)}</p>
-            <p className="mt-2 text-xs text-muted-foreground">Dias úteis restantes</p>
-            <p className="font-display text-3xl font-bold leading-tight">{m.diasUteisRestantes}</p>
+        <div className="flex flex-1 flex-col justify-between gap-2 overflow-visible">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0 leading-tight">
+              <p className="text-[11px] text-muted-foreground">Faltam</p>
+              <p className="font-display text-xl font-bold leading-tight">{formatarMoeda(m.faltaMensal)}</p>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">Dias úteis restantes</p>
+              <p className="font-display text-2xl font-bold leading-none">{m.diasUteisRestantes}</p>
+            </div>
+            <span
+              className="grid h-12 w-12 shrink-0 place-items-center rounded-xl"
+              style={{ background: "color-mix(in oklab, var(--purple) 18%, transparent)", color: "var(--purple)" }}
+            >
+              <TrendingUp size={24} />
+            </span>
           </div>
-          <span
-            className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl"
-            style={{ background: "color-mix(in oklab, var(--purple) 18%, transparent)", color: "var(--purple)" }}
+          <div
+            className="rounded-xl px-3 py-2 text-center"
+            style={{ background: "color-mix(in oklab, var(--purple) 14%, transparent)" }}
           >
-            <TrendingUp size={30} />
-          </span>
-        </div>
-        <div
-          className="mt-auto rounded-xl px-3 py-2.5 text-center"
-          style={{ background: "color-mix(in oklab, var(--purple) 14%, transparent)" }}
-        >
-          <p className="text-[11px] text-muted-foreground">Necessário vender</p>
-          <p className="font-display text-xl font-bold" style={{ color: "var(--purple)" }}>
-            {formatarMoeda(m.necessarioPorDia)}/dia
-          </p>
-          <p className="text-[11px] text-muted-foreground">para bater o desafio</p>
+            <p className="text-[10px] leading-tight text-muted-foreground">Necessário vender</p>
+            <p className="font-display text-lg font-bold leading-tight" style={{ color: "var(--purple)" }}>
+              {formatarMoeda(m.necessarioPorDia)}/dia
+            </p>
+            <p className="text-[10px] leading-tight text-muted-foreground">para bater o desafio</p>
+          </div>
         </div>
       </Card>
+
     </div>
   );
 }
