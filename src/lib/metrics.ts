@@ -271,7 +271,16 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
 
   // Resumo
   const qtdVendas = inMonth.length;
-  const ticketMedio = qtdVendas > 0 ? realizadoMes / qtdVendas : 0;
+
+  // Ticket médio apenas dos planos principais (PLATINUM, OURO, PRATA, BRONZE)
+  const planosValidosTicket = new Set(["PLATINUM", "OURO", "PRATA", "BRONZE"]);
+  const vendasTicket = inMonth.filter((r) => {
+    const planoNorm = String(r.plano ?? "").trim().toUpperCase();
+    return planosValidosTicket.has(planoNorm);
+  });
+  const qtdVendasTicket = vendasTicket.length;
+  const totalTicket = vendasTicket.reduce((s, r) => s + r.valor, 0);
+  const ticketMedio = qtdVendasTicket > 0 ? totalTicket / qtdVendasTicket : 0;
   let melhorDia = 0;
   let melhorValor = 0;
   for (let d = 1; d <= totalDays; d++) {
