@@ -66,11 +66,13 @@ const MES_LABEL = (d: Date) =>
 function businessDaysRemaining(today: Date): number {
   const year = today.getFullYear();
   const month = today.getMonth();
-  const last = new Date(year, month + 1, 0).getDate();
+  // Conta do dia seguinte ao atual até o dia 30 do mês (incluindo o 30),
+  // desconsiderando apenas os domingos. Sábado conta.
+  const lastDay = Math.min(30, new Date(year, month + 1, 0).getDate());
   let count = 0;
-  for (let d = today.getDate(); d <= last; d++) {
+  for (let d = today.getDate() + 1; d <= lastDay; d++) {
     const wd = new Date(year, month, d).getDay();
-    if (wd !== 0 && wd !== 6) count++;
+    if (wd !== 0) count++; // 0 = domingo
   }
   return count;
 }
