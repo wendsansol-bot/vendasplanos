@@ -65,7 +65,7 @@ export function GaugeChart({ pct }: Props) {
         <circle cx={cx} cy={cy} r={5} fill="#0a0f1f" />
         {/* escala */}
         <text x={polar(cx, cy, r + 20, START).x - 4} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">0%</text>
-        <text x={cx} y={cy - r - 14} className="fill-muted-foreground" fontSize="14" textAnchor="middle">50%</text>
+        <text x={cx} y={cy - r - 8} className="fill-muted-foreground" fontSize="14" textAnchor="middle">50%</text>
         <text x={polar(cx, cy, r + 20, END).x + 6} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">100%</text>
       </svg>
       <div className="-mt-10 flex flex-col items-center">
