@@ -23,12 +23,12 @@ export function GaugeChart({ pct }: Props) {
   const w = 360;
   const h = 210;
   const cx = w / 2;
-  const cy = h - 24;
+  const cy = h - 54;
   const r = 140;
   const clamped = Math.max(0, Math.min(100, pct));
   const valueAngle = START + (clamped / 100) * (END - START);
   const color = colorHexFromPercent(pct);
-  const needle = polar(cx, cy, r - 14, valueAngle);
+  const needle = polar(cx, cy, r - 30, valueAngle);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -65,10 +65,10 @@ export function GaugeChart({ pct }: Props) {
         <circle cx={cx} cy={cy} r={5} fill="#0a0f1f" />
         {/* escala */}
         <text x={polar(cx, cy, r + 20, START).x - 4} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">0%</text>
-        <text x={cx} y={cy - r - 14} className="fill-muted-foreground" fontSize="14" textAnchor="middle">50%</text>
+        <text x={cx} y={cy - r - 8} className="fill-muted-foreground" fontSize="14" textAnchor="middle">50%</text>
         <text x={polar(cx, cy, r + 20, END).x + 6} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">100%</text>
       </svg>
-      <div className="-mt-10 flex flex-col items-center">
+      <div className="-mt-8 flex flex-col items-center">
         <span className="font-display text-5xl font-extrabold glow-text" style={{ color }}>
           {formatarPercentual(pct, 2)}
         </span>
