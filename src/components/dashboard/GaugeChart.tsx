@@ -20,10 +20,10 @@ function arcPath(cx: number, cy: number, r: number, startA: number, endA: number
 }
 
 export function GaugeChart({ pct }: Props) {
-  const w = 360;
-  const h = 210;
+  const w = 400;
+  const h = 230;
   const cx = w / 2;
-  const cy = h - 54;
+  const cy = h - 60;
   const r = 140;
   const clamped = Math.max(0, Math.min(100, pct));
   const valueAngle = START + (clamped / 100) * (END - START);
@@ -64,9 +64,9 @@ export function GaugeChart({ pct }: Props) {
         <circle cx={cx} cy={cy} r={11} fill={color} />
         <circle cx={cx} cy={cy} r={5} fill="#0a0f1f" />
         {/* escala */}
-        <text x={polar(cx, cy, r + 20, START).x - 4} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">0%</text>
+        <text x={polar(cx, cy, r + 20, START).x + 6} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">0%</text>
         <text x={cx} y={cy - r - 8} className="fill-muted-foreground" fontSize="14" textAnchor="middle">50%</text>
-        <text x={polar(cx, cy, r + 20, END).x + 6} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">100%</text>
+        <text x={polar(cx, cy, r + 20, END).x - 6} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">100%</text>
       </svg>
       <div className="-mt-8 flex flex-col items-center">
         <span className="font-display text-5xl font-extrabold glow-text" style={{ color }}>
