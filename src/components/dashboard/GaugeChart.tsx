@@ -68,7 +68,7 @@ export function GaugeChart({ pct }: Props) {
         <text x={cx} y={cy - r - 8} className="fill-muted-foreground" fontSize="14" textAnchor="middle">50%</text>
         <text x={polar(cx, cy, r + 20, END).x + 6} y={cy + 6} className="fill-muted-foreground" fontSize="14" textAnchor="middle">100%</text>
       </svg>
-      <div className="-mt-10 flex flex-col items-center">
+      <div className="-mt-8 flex flex-col items-center">
         <span className="font-display text-5xl font-extrabold glow-text" style={{ color }}>
           {formatarPercentual(pct, 2)}
         </span>
