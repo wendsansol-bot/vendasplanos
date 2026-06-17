@@ -23,12 +23,12 @@ export function GaugeChart({ pct }: Props) {
   const w = 360;
   const h = 210;
   const cx = w / 2;
-  const cy = h - 24;
+  const cy = h - 54;
   const r = 140;
   const clamped = Math.max(0, Math.min(100, pct));
   const valueAngle = START + (clamped / 100) * (END - START);
   const color = colorHexFromPercent(pct);
-  const needle = polar(cx, cy, r - 14, valueAngle);
+  const needle = polar(cx, cy, r - 30, valueAngle);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
