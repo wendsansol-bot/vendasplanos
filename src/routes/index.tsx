@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
 
 type RefreshState = "idle" | "loading" | "success" | "error";
 
-const WAIT_MS = 20_000;
+const WAIT_MS = 30_000;
 
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={`card-surface p-4 ${className}`}>{children}</div>;
