@@ -1,7 +1,6 @@
 import {
-  DESAFIO_DIARIO,
-  DESAFIO_MENSAL,
-  DESAFIO_SEMANAL,
+  getMetasDoMes,
+  mesToIndex,
   type Filters,
   type SaleRow,
 } from "./dashboard";
