@@ -174,11 +174,16 @@ const fmtDay = (d: number) => String(d).padStart(2, "0");
 
 export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   const rows = applyFilters(allRows, filters);
-  const today = new Date();
-  const y = today.getFullYear();
-  const m = today.getMonth();
+  const now = new Date();
+  const y = Number(filters.ano) || now.getFullYear();
+  const m = mesToIndex(filters.mes);
   const totalDays = new Date(y, m + 1, 0).getDate();
   const mm = fmtDay(m + 1);
+
+  // Data de referência: dia atual se for o mês corrente; caso contrário,
+  // considera o mês como encerrado (último dia) para o histórico.
+  const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
+  const today = isCurrentMonth ? now : new Date(y, m, totalDays, 23, 59, 59);
 
   const inMonth = rows.filter((r) => r.date && r.date.getFullYear() === y && r.date.getMonth() === m);
 
@@ -187,9 +192,11 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   // Sem dados reais no mês -> usa simulação.
   if (realizadoMes <= 0) return SIMULATED;
 
-  const desafioMensal = DESAFIO_MENSAL;
-  const desafioSemanal = DESAFIO_SEMANAL;
-  const desafioDiario = DESAFIO_DIARIO;
+  // Metas históricas correspondentes ao mês/ano selecionado.
+  const metas = getMetasDoMes(y, m);
+  const desafioMensal = metas.mensal;
+  const desafioSemanal = metas.semanal;
+  const desafioDiario = metas.diario;
 
   const pctMensal = (realizadoMes / desafioMensal) * 100;
   const faltaMensal = Math.max(0, desafioMensal - realizadoMes);
