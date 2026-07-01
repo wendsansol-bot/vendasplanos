@@ -79,55 +79,69 @@ function businessDaysRemaining(today: Date): number {
 
 /* ------------------------- Simulated fallback ------------------------- */
 
-export const SIMULATED: Metrics = {
-  isSimulated: true,
-  desafioMensal: 40000,
-  realizadoMes: 27500,
-  pctMensal: 68.75,
-  faltaMensal: 12500,
-  desafioSemanal: 10000,
-  realizadoSemana: 7800,
-  pctSemanal: 78,
-  faltaSemanal: 2200,
-  desafioDiario: 1666.67,
-  realizadoHoje: 2100,
-  pctDiario: 126,
-  difDiario: 433.33,
-  diasUteisRestantes: 8,
-  necessarioPorDia: 1562.5,
-  acumulado: (() => {
-    const pts: AccumPoint[] = [];
-    const total = 30;
-    const hoje = 12;
-    let acc = 0;
-    for (let d = 1; d <= total; d++) {
-      acc += d <= hoje ? 27500 / hoje : 0;
-      pts.push({
-        dia: d,
-        meta: Math.round((40000 * d) / total),
-        realizado: d <= hoje ? Math.round(acc) : null,
-        hoje: d === hoje,
-      });
-    }
-    return pts;
-  })(),
-  semanas: [
-    { semana: "Semana 1", periodo: "01/06 - 06/06", desafio: 10000, realizado: 8500, pct: 85 },
-    { semana: "Semana 2", periodo: "08/06 - 13/06", desafio: 10000, realizado: 12000, pct: 120 },
-    { semana: "Semana 3", periodo: "15/06 - 20/06", desafio: 10000, realizado: 6000, pct: 60 },
-    { semana: "Semana 4", periodo: "22/06 - 30/06", desafio: 10000, realizado: null, pct: null },
-  ],
-  planos: [
-    { posicao: 1, plano: "Platinum", qtd: 18, faturamento: 22000, participacao: 45 },
-    { posicao: 2, plano: "Ouro", qtd: 12, faturamento: 15000, participacao: 31 },
-    { posicao: 3, plano: "Prata", qtd: 7, faturamento: 8500, participacao: 17 },
-    { posicao: 4, plano: "Bronze", qtd: 3, faturamento: 3000, participacao: 7 },
-  ],
-  ticketMedio: 3750,
-  qtdVendas: 34,
-  melhorDiaLabel: "03/06/2025",
-  melhorDiaValor: 2100,
-};
+/**
+ * Conjunto de dados demonstrativos usado como fallback quando o mês
+ * selecionado não possui vendas reais. As metas seguem o mês selecionado.
+ */
+export function makeSimulated(metas: MetaMensal): Metrics {
+  const realizadoMes = 27500;
+  const realizadoSemana = 7800;
+  const realizadoHoje = 2100;
+  const diasUteisRestantes = 8;
+  const desafioMensal = metas.mensal;
+  const desafioSemanal = metas.semanal;
+  const desafioDiario = metas.diario;
+  const faltaMensal = Math.max(0, desafioMensal - realizadoMes);
+  return {
+    isSimulated: true,
+    desafioMensal,
+    realizadoMes,
+    pctMensal: (realizadoMes / desafioMensal) * 100,
+    faltaMensal,
+    desafioSemanal,
+    realizadoSemana,
+    pctSemanal: (realizadoSemana / desafioSemanal) * 100,
+    faltaSemanal: Math.max(0, desafioSemanal - realizadoSemana),
+    desafioDiario,
+    realizadoHoje,
+    pctDiario: (realizadoHoje / desafioDiario) * 100,
+    difDiario: realizadoHoje - desafioDiario,
+    diasUteisRestantes,
+    necessarioPorDia: diasUteisRestantes > 0 ? faltaMensal / diasUteisRestantes : 0,
+    acumulado: (() => {
+      const pts: AccumPoint[] = [];
+      const total = 30;
+      const hoje = 12;
+      let acc = 0;
+      for (let d = 1; d <= total; d++) {
+        acc += d <= hoje ? realizadoMes / hoje : 0;
+        pts.push({
+          dia: d,
+          meta: Math.round((desafioMensal * d) / total),
+          realizado: d <= hoje ? Math.round(acc) : null,
+          hoje: d === hoje,
+        });
+      }
+      return pts;
+    })(),
+    semanas: [
+      { semana: "Semana 1", periodo: "01/06 - 06/06", desafio: desafioSemanal, realizado: 8500, pct: (8500 / desafioSemanal) * 100 },
+      { semana: "Semana 2", periodo: "08/06 - 13/06", desafio: desafioSemanal, realizado: 12000, pct: (12000 / desafioSemanal) * 100 },
+      { semana: "Semana 3", periodo: "15/06 - 20/06", desafio: desafioSemanal, realizado: 6000, pct: (6000 / desafioSemanal) * 100 },
+      { semana: "Semana 4", periodo: "22/06 - 30/06", desafio: desafioSemanal, realizado: null, pct: null },
+    ],
+    planos: [
+      { posicao: 1, plano: "Platinum", qtd: 18, faturamento: 22000, participacao: 45 },
+      { posicao: 2, plano: "Ouro", qtd: 12, faturamento: 15000, participacao: 31 },
+      { posicao: 3, plano: "Prata", qtd: 7, faturamento: 8500, participacao: 17 },
+      { posicao: 4, plano: "Bronze", qtd: 3, faturamento: 3000, participacao: 7 },
+    ],
+    ticketMedio: 3750,
+    qtdVendas: 34,
+    melhorDiaLabel: "03/06/2025",
+    melhorDiaValor: 2100,
+  };
+}
 
 /* --------------------------- Filtering --------------------------- */
 
