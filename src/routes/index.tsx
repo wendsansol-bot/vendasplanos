@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  EMPTY_FILTERS,
+  defaultFilters,
   fetchSheet,
   triggerMakeRefresh,
   type Filters,
@@ -41,12 +41,12 @@ type RefreshState = "idle" | "loading" | "success" | "error";
 const WAIT_MS = 30_000;
 
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`card-surface p-4 ${className}`}>{children}</div>;
+  return <div className={`card-surface overflow-hidden p-4 ${className}`}>{children}</div>;
 }
 
 function Dashboard() {
   const [rows, setRows] = useState<SaleRow[]>([]);
-  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<Filters>(() => defaultFilters());
   const [refreshState, setRefreshState] = useState<RefreshState>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -82,16 +82,21 @@ function Dashboard() {
     }, 6000);
   }, [loadData]);
 
-  const filterOptions = useMemo(
-    () => ({
+  const filterOptions = useMemo(() => {
+    const anos = new Set<string>();
+    rows.forEach((r) => {
+      if (r.date) anos.add(String(r.date.getFullYear()));
+    });
+    anos.add(String(new Date().getFullYear()));
+    return {
+      ano: Array.from(anos).sort((a, b) => Number(b) - Number(a)),
       responsavel: uniqueValues(rows, "responsavel"),
       empresa: uniqueValues(rows, "empresa"),
       cidade: uniqueValues(rows, "cidade"),
       plano: uniqueValues(rows, "plano"),
       pagamento: uniqueValues(rows, "pagamento"),
-    }),
-    [rows],
-  );
+    };
+  }, [rows]);
 
   const metrics = useMemo(() => computeMetrics(rows, filters), [rows, filters]);
 
