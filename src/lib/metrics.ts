@@ -2,6 +2,7 @@ import {
   getMetasDoMes,
   mesToIndex,
   type Filters,
+  type MetaMensal,
   type SaleRow,
 } from "./dashboard";
 
