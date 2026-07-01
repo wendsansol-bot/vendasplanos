@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  EMPTY_FILTERS,
+  defaultFilters,
   fetchSheet,
   triggerMakeRefresh,
   type Filters,
