@@ -82,16 +82,21 @@ function Dashboard() {
     }, 6000);
   }, [loadData]);
 
-  const filterOptions = useMemo(
-    () => ({
+  const filterOptions = useMemo(() => {
+    const anos = new Set<string>();
+    rows.forEach((r) => {
+      if (r.date) anos.add(String(r.date.getFullYear()));
+    });
+    anos.add(String(new Date().getFullYear()));
+    return {
+      ano: Array.from(anos).sort((a, b) => Number(b) - Number(a)),
       responsavel: uniqueValues(rows, "responsavel"),
       empresa: uniqueValues(rows, "empresa"),
       cidade: uniqueValues(rows, "cidade"),
       plano: uniqueValues(rows, "plano"),
       pagamento: uniqueValues(rows, "pagamento"),
-    }),
-    [rows],
-  );
+    };
+  }, [rows]);
 
   const metrics = useMemo(() => computeMetrics(rows, filters), [rows, filters]);
 
