@@ -46,7 +46,7 @@ function Panel({ children, className = "" }: { children: React.ReactNode; classN
 
 function Dashboard() {
   const [rows, setRows] = useState<SaleRow[]>([]);
-  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<Filters>(() => defaultFilters());
   const [refreshState, setRefreshState] = useState<RefreshState>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
