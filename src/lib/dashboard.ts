@@ -7,9 +7,57 @@ export const MAKE_WEBHOOK_URL =
   "https://hook.us1.make.com/zhgilgemm94769fx97nakeoobbqbvuv4";
 
 // Business challenge configuration (not present in the sheet).
+// Metas padrão (fallback quando o mês não estiver configurado abaixo).
 export const DESAFIO_MENSAL = 40000;
 export const DESAFIO_SEMANAL = 10000;
 export const DESAFIO_DIARIO = DESAFIO_SEMANAL / 6; // 1666.67
+
+// Nomes dos meses (índice 0 = Janeiro).
+export const MESES = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
+
+export interface MetaMensal {
+  mensal: number;
+  semanal: number;
+  diario: number;
+}
+
+/**
+ * Metas históricas por mês. Chave no formato "AAAA-MM" (mês de 01 a 12).
+ * Para adicionar novos meses no futuro, basta acrescentar uma nova linha aqui.
+ */
+export const METAS_POR_MES: Record<string, { mensal: number; semanal: number }> = {
+  "2026-06": { mensal: 40000, semanal: 10000 }, // Junho/2026
+  "2026-07": { mensal: 50000, semanal: 12500 }, // Julho/2026
+};
+
+// Meta padrão usada quando o mês selecionado não estiver configurado acima.
+export const META_PADRAO = { mensal: DESAFIO_MENSAL, semanal: DESAFIO_SEMANAL };
+
+/** Retorna as metas (mensal/semanal/diária) do mês informado. */
+export function getMetasDoMes(ano: number, mes0: number): MetaMensal {
+  const key = `${ano}-${String(mes0 + 1).padStart(2, "0")}`;
+  const base = METAS_POR_MES[key] ?? META_PADRAO;
+  return { mensal: base.mensal, semanal: base.semanal, diario: base.semanal / 6 };
+}
+
+/** Converte o nome do mês para o índice 0-11 (fallback: mês atual). */
+export function mesToIndex(nome: string): number {
+  const i = MESES.indexOf(nome);
+  return i >= 0 ? i : new Date().getMonth();
+}
 
 export interface SaleRow {
   valor: number;
@@ -22,7 +70,8 @@ export interface SaleRow {
 }
 
 export interface Filters {
-  periodo: string;
+  mes: string;
+  ano: string;
   responsavel: string;
   empresa: string;
   cidade: string;
@@ -30,14 +79,19 @@ export interface Filters {
   pagamento: string;
 }
 
-export const EMPTY_FILTERS: Filters = {
-  periodo: "Mês atual",
-  responsavel: "Todos",
-  empresa: "Todas",
-  cidade: "Todas",
-  plano: "Todos",
-  pagamento: "Todos",
-};
+/** Filtros padrão: mês e ano atuais, demais em "Todos". */
+export function defaultFilters(): Filters {
+  const now = new Date();
+  return {
+    mes: MESES[now.getMonth()],
+    ano: String(now.getFullYear()),
+    responsavel: "Todos",
+    empresa: "Todas",
+    cidade: "Todas",
+    plano: "Todos",
+    pagamento: "Todos",
+  };
+}
 
 /* ----------------------------- Formatting ----------------------------- */
 
