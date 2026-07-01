@@ -204,11 +204,12 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
 
   const realizadoMes = inMonth.reduce((s, r) => s + r.valor, 0);
 
-  // Sem dados reais no mês -> usa simulação.
-  if (realizadoMes <= 0) return SIMULATED;
-
   // Metas históricas correspondentes ao mês/ano selecionado.
   const metas = getMetasDoMes(y, m);
+
+  // Sem dados reais no mês -> usa simulação (com as metas do mês selecionado).
+  if (realizadoMes <= 0) return makeSimulated(metas);
+
   const desafioMensal = metas.mensal;
   const desafioSemanal = metas.semanal;
   const desafioDiario = metas.diario;
