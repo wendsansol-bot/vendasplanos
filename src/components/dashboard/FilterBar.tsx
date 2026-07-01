@@ -1,16 +1,17 @@
 import { ChevronDown } from "lucide-react";
-import type { Filters } from "@/lib/dashboard";
+import { MESES, type Filters } from "@/lib/dashboard";
 
 interface Option {
   key: keyof Filters;
   label: string;
-  all: string;
+  all?: string;
   options: string[];
 }
 
 interface Props {
   filters: Filters;
   options: {
+    ano: string[];
     responsavel: string[];
     empresa: string[];
     cidade: string[];
@@ -22,7 +23,8 @@ interface Props {
 
 export function FilterBar({ filters, options, onChange }: Props) {
   const defs: Option[] = [
-    { key: "periodo", label: "Período", all: "Mês atual", options: ["Mês atual"] },
+    { key: "mes", label: "Mês", options: MESES },
+    { key: "ano", label: "Ano", options: options.ano },
     { key: "responsavel", label: "Responsável", all: "Todos", options: options.responsavel },
     { key: "empresa", label: "Empresa", all: "Todas", options: options.empresa },
     { key: "cidade", label: "Cidade", all: "Todas", options: options.cidade },
@@ -31,7 +33,7 @@ export function FilterBar({ filters, options, onChange }: Props) {
   ];
 
   return (
-    <div className="grid grid-cols-6 gap-3">
+    <div className="grid grid-cols-7 gap-3">
       {defs.map((d) => (
         <label
           key={d.key}
@@ -44,7 +46,7 @@ export function FilterBar({ filters, options, onChange }: Props) {
               onChange={(e) => onChange(d.key, e.target.value)}
               className="w-full cursor-pointer appearance-none bg-transparent text-sm font-semibold text-foreground outline-none [&>option]:bg-card [&>option]:text-foreground"
             >
-              <option value={d.all}>{d.all}</option>
+              {d.all && <option value={d.all}>{d.all}</option>}
               {d.options.map((o) => (
                 <option key={o} value={o}>
                   {o}
