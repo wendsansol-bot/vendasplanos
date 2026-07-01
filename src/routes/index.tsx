@@ -41,7 +41,7 @@ type RefreshState = "idle" | "loading" | "success" | "error";
 const WAIT_MS = 30_000;
 
 function Panel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`card-surface p-4 ${className}`}>{children}</div>;
+  return <div className={`card-surface overflow-hidden p-4 ${className}`}>{children}</div>;
 }
 
 function Dashboard() {
