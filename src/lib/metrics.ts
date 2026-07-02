@@ -217,7 +217,6 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   const y = Number(filters.ano) || now.getFullYear();
   const m = mesToIndex(filters.mes);
   const totalDays = new Date(y, m + 1, 0).getDate();
-  const mm = fmtDay(m + 1);
 
   // Data de referência: dia atual se for o mês corrente; caso contrário,
   // considera o mês como encerrado (último dia) para o histórico.
