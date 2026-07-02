@@ -241,13 +241,14 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   const pctMensal = (realizadoMes / desafioMensal) * 100;
   const faltaMensal = Math.max(0, desafioMensal - realizadoMes);
 
-  // Semana atual (definida pelos ranges fixos do mês)
-  const ranges = weekRanges(today);
-  const currentWeek = ranges.find(
-    (w) => today >= w.startDate && today <= w.endDate,
-  ) ?? ranges[ranges.length - 1];
-  const realizadoSemana = inMonth
-    .filter((r) => r.date! >= currentWeek.startDate && r.date! <= currentWeek.endDate)
+  // Semanas do mês (podem atravessar para o mês seguinte, ex.: 27/07 a 01/08).
+  // Somam vendas dentro do intervalo, por isso usam `rows` (não `inMonth`).
+  const ranges = weekRanges(y, m);
+  const currentWeek =
+    ranges.find((w) => today >= w.startDate && today <= w.endDate) ??
+    ranges[ranges.length - 1];
+  const realizadoSemana = rows
+    .filter((r) => r.date && r.date >= currentWeek.startDate && r.date <= currentWeek.endDate)
     .reduce((s, r) => s + r.valor, 0);
   const pctSemanal = (realizadoSemana / desafioSemanal) * 100;
   const faltaSemanal = Math.max(0, desafioSemanal - realizadoSemana);
