@@ -59,6 +59,29 @@ export function mesToIndex(nome: string): number {
   return i >= 0 ? i : new Date().getMonth();
 }
 
+/* --------------------------- Semanas por mês --------------------------- */
+
+/**
+ * Configuração de semanas específicas por mês. Chave "AAAA-MM".
+ * Cada semana define início e fim como [mês0, dia] (mês0 = 0-11), permitindo
+ * que uma semana atravesse para o mês seguinte (ex.: 27/07 a 01/08).
+ * Meses sem configuração aqui usam as semanas padrão calculadas no metrics.
+ */
+export interface SemanaConfig {
+  label: string;
+  start: [number, number]; // [mes0, dia]
+  end: [number, number]; // [mes0, dia]
+}
+
+export const SEMANAS_POR_MES: Record<string, SemanaConfig[]> = {
+  "2026-07": [
+    { label: "Semana 1", start: [6, 6], end: [6, 11] },
+    { label: "Semana 2", start: [6, 13], end: [6, 18] },
+    { label: "Semana 3", start: [6, 20], end: [6, 25] },
+    { label: "Semana 4", start: [6, 27], end: [7, 1] },
+  ],
+};
+
 export interface SaleRow {
   valor: number;
   date: Date | null;
