@@ -1,6 +1,7 @@
 import {
   getMetasDoMes,
   mesToIndex,
+  SEMANAS_POR_MES,
   type Filters,
   type MetaMensal,
   type SaleRow,
