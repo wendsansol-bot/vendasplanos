@@ -167,23 +167,46 @@ export function uniqueValues(rows: SaleRow[], key: keyof SaleRow): string[] {
 
 /* --------------------------- Week ranges --------------------------- */
 
-function weekRanges(today: Date) {
-  const y = today.getFullYear();
-  const m = today.getMonth();
+const fmtDay = (d: number) => String(d).padStart(2, "0");
+
+interface Range {
+  label: string;
+  startDate: Date;
+  endDate: Date;
+  periodo: string;
+}
+
+function weekRanges(y: number, m: number): Range[] {
+  const key = `${y}-${fmtDay(m + 1)}`;
+  const config = SEMANAS_POR_MES[key];
+
+  if (config) {
+    return config.map((w) => {
+      const startDate = new Date(y, w.start[0], w.start[1]);
+      const endDate = new Date(y, w.end[0], w.end[1], 23, 59, 59);
+      return {
+        label: w.label,
+        startDate,
+        endDate,
+        periodo: `${fmtDay(w.start[1])}/${fmtDay(w.start[0] + 1)} - ${fmtDay(w.end[1])}/${fmtDay(w.end[0] + 1)}`,
+      };
+    });
+  }
+
   const last = new Date(y, m + 1, 0).getDate();
+  const mm = fmtDay(m + 1);
   return [
     { label: "Semana 1", start: 1, end: 6 },
     { label: "Semana 2", start: 8, end: 13 },
     { label: "Semana 3", start: 15, end: 20 },
     { label: "Semana 4", start: 22, end: last },
   ].map((w) => ({
-    ...w,
+    label: w.label,
     startDate: new Date(y, m, w.start),
     endDate: new Date(y, m, w.end, 23, 59, 59),
+    periodo: `${fmtDay(w.start)}/${mm} - ${fmtDay(w.end)}/${mm}`,
   }));
 }
-
-const fmtDay = (d: number) => String(d).padStart(2, "0");
 
 /* --------------------------- Main compute --------------------------- */
 
