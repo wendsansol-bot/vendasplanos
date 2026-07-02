@@ -1,6 +1,7 @@
 import {
   getMetasDoMes,
   mesToIndex,
+  SEMANAS_POR_MES,
   type Filters,
   type MetaMensal,
   type SaleRow,
@@ -167,23 +168,46 @@ export function uniqueValues(rows: SaleRow[], key: keyof SaleRow): string[] {
 
 /* --------------------------- Week ranges --------------------------- */
 
-function weekRanges(today: Date) {
-  const y = today.getFullYear();
-  const m = today.getMonth();
+const fmtDay = (d: number) => String(d).padStart(2, "0");
+
+interface Range {
+  label: string;
+  startDate: Date;
+  endDate: Date;
+  periodo: string;
+}
+
+function weekRanges(y: number, m: number): Range[] {
+  const key = `${y}-${fmtDay(m + 1)}`;
+  const config = SEMANAS_POR_MES[key];
+
+  if (config) {
+    return config.map((w) => {
+      const startDate = new Date(y, w.start[0], w.start[1]);
+      const endDate = new Date(y, w.end[0], w.end[1], 23, 59, 59);
+      return {
+        label: w.label,
+        startDate,
+        endDate,
+        periodo: `${fmtDay(w.start[1])}/${fmtDay(w.start[0] + 1)} - ${fmtDay(w.end[1])}/${fmtDay(w.end[0] + 1)}`,
+      };
+    });
+  }
+
   const last = new Date(y, m + 1, 0).getDate();
+  const mm = fmtDay(m + 1);
   return [
     { label: "Semana 1", start: 1, end: 6 },
     { label: "Semana 2", start: 8, end: 13 },
     { label: "Semana 3", start: 15, end: 20 },
     { label: "Semana 4", start: 22, end: last },
   ].map((w) => ({
-    ...w,
+    label: w.label,
     startDate: new Date(y, m, w.start),
     endDate: new Date(y, m, w.end, 23, 59, 59),
+    periodo: `${fmtDay(w.start)}/${mm} - ${fmtDay(w.end)}/${mm}`,
   }));
 }
-
-const fmtDay = (d: number) => String(d).padStart(2, "0");
 
 /* --------------------------- Main compute --------------------------- */
 
@@ -193,7 +217,6 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   const y = Number(filters.ano) || now.getFullYear();
   const m = mesToIndex(filters.mes);
   const totalDays = new Date(y, m + 1, 0).getDate();
-  const mm = fmtDay(m + 1);
 
   // Data de referência: dia atual se for o mês corrente; caso contrário,
   // considera o mês como encerrado (último dia) para o histórico.
@@ -207,8 +230,9 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   // Metas históricas correspondentes ao mês/ano selecionado.
   const metas = getMetasDoMes(y, m);
 
-  // Sem dados reais no mês -> usa simulação (com as metas do mês selecionado).
-  if (realizadoMes <= 0) return makeSimulated(metas);
+  // Sem vendas no mês selecionado: os indicadores devem refletir zero.
+  // (Não reutilizamos dados simulados nem de outros meses.)
+
 
   const desafioMensal = metas.mensal;
   const desafioSemanal = metas.semanal;
@@ -217,13 +241,14 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   const pctMensal = (realizadoMes / desafioMensal) * 100;
   const faltaMensal = Math.max(0, desafioMensal - realizadoMes);
 
-  // Semana atual (definida pelos ranges fixos do mês)
-  const ranges = weekRanges(today);
-  const currentWeek = ranges.find(
-    (w) => today >= w.startDate && today <= w.endDate,
-  ) ?? ranges[ranges.length - 1];
-  const realizadoSemana = inMonth
-    .filter((r) => r.date! >= currentWeek.startDate && r.date! <= currentWeek.endDate)
+  // Semanas do mês (podem atravessar para o mês seguinte, ex.: 27/07 a 01/08).
+  // Somam vendas dentro do intervalo, por isso usam `rows` (não `inMonth`).
+  const ranges = weekRanges(y, m);
+  const currentWeek =
+    ranges.find((w) => today >= w.startDate && today <= w.endDate) ??
+    ranges[ranges.length - 1];
+  const realizadoSemana = rows
+    .filter((r) => r.date && r.date >= currentWeek.startDate && r.date <= currentWeek.endDate)
     .reduce((s, r) => s + r.valor, 0);
   const pctSemanal = (realizadoSemana / desafioSemanal) * 100;
   const faltaSemanal = Math.max(0, desafioSemanal - realizadoSemana);
@@ -258,13 +283,13 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
 
   // Evolução semanal
   const semanas: WeekRow[] = ranges.map((w) => {
-    const real = inMonth
-      .filter((r) => r.date! >= w.startDate && r.date! <= w.endDate)
+    const real = rows
+      .filter((r) => r.date && r.date >= w.startDate && r.date <= w.endDate)
       .reduce((s, r) => s + r.valor, 0);
     const future = w.startDate > today;
     return {
       semana: w.label,
-      periodo: `${fmtDay(w.start)}/${mm} - ${fmtDay(w.end)}/${mm}`,
+      periodo: w.periodo,
       desafio: desafioSemanal,
       realizado: future && real === 0 ? null : real,
       pct: future && real === 0 ? null : (real / desafioSemanal) * 100,
