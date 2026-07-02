@@ -283,13 +283,13 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
 
   // Evolução semanal
   const semanas: WeekRow[] = ranges.map((w) => {
-    const real = inMonth
-      .filter((r) => r.date! >= w.startDate && r.date! <= w.endDate)
+    const real = rows
+      .filter((r) => r.date && r.date >= w.startDate && r.date <= w.endDate)
       .reduce((s, r) => s + r.valor, 0);
     const future = w.startDate > today;
     return {
       semana: w.label,
-      periodo: `${fmtDay(w.start)}/${mm} - ${fmtDay(w.end)}/${mm}`,
+      periodo: w.periodo,
       desafio: desafioSemanal,
       realizado: future && real === 0 ? null : real,
       pct: future && real === 0 ? null : (real / desafioSemanal) * 100,
