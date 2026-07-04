@@ -97,7 +97,7 @@ export function KpiCards({ m }: { m: Metrics }) {
         </div>
         <div
           className="mt-2 rounded-lg px-3 py-1.5 text-xs"
-          style={{ background: "color-mix(in oklab, var(--green) 14%, transparent)" }}
+          style={{ background: "var(--tint-green-14)" }}
         >
           <span className="text-muted-foreground">
             {m.faltaSemanal > 0 ? "Falta: " : "Acima: "}
