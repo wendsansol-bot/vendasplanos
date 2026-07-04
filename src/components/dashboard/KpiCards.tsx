@@ -123,7 +123,7 @@ export function KpiCards({ m }: { m: Metrics }) {
         <div
           className="mt-auto rounded-lg px-3 py-2 text-xs font-semibold"
           style={{
-            background: `color-mix(in oklab, ${colorHexFromPercent(m.pctDiario)} 16%, transparent)`,
+            background: `${colorHexFromPercent(m.pctDiario)}29`,
             color: colorHexFromPercent(m.pctDiario),
           }}
         >
