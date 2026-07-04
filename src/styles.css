@@ -106,9 +106,14 @@
     padding: 0;
   }
 
+  html {
+    color-scheme: dark;
+    background-color: #070b14;
+  }
+
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--color-background, #070b14);
+    color: var(--color-foreground, #f3f5fb);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
@@ -120,6 +125,7 @@
     color-mix(in oklab, var(--card) 92%, white 4%),
     color-mix(in oklab, var(--card) 96%, black 6%)
   );
+  background-color: #0c1220;
   border: 1px solid var(--border);
   box-shadow:
     0 1px 0 0 oklch(1 0 0 / 0.04) inset,
