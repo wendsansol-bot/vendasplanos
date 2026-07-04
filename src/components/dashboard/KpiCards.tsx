@@ -15,6 +15,13 @@ const accentVar: Record<string, string> = {
   purple: "var(--purple)",
 };
 
+const accentTint22: Record<string, string> = {
+  blue: "var(--tint-blue-22)",
+  green: "var(--tint-green-22)",
+  orange: "var(--tint-orange-22)",
+  purple: "var(--tint-purple-22)",
+};
+
 function Card({
   accent,
   icon,
