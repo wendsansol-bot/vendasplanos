@@ -93,6 +93,15 @@
     ),
     radial-gradient(900px 500px at 95% 0%, oklch(0.24 0.05 47 / 0.25), transparent 55%),
     linear-gradient(180deg, oklch(0.16 0.03 264), oklch(0.13 0.025 264));
+
+  /* Tints translúcidos usados nos cards (com fallback rgba mais abaixo) */
+  --tint-blue-22: color-mix(in oklab, var(--blue) 22%, transparent);
+  --tint-green-22: color-mix(in oklab, var(--green) 22%, transparent);
+  --tint-orange-22: color-mix(in oklab, var(--orange) 22%, transparent);
+  --tint-purple-22: color-mix(in oklab, var(--purple) 22%, transparent);
+  --tint-green-14: color-mix(in oklab, var(--green) 14%, transparent);
+  --tint-purple-18: color-mix(in oklab, var(--purple) 18%, transparent);
+  --tint-purple-14: color-mix(in oklab, var(--purple) 14%, transparent);
 }
 
 @layer base {
