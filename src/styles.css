@@ -145,3 +145,72 @@
 @utility glow-text {
   text-shadow: 0 0 24px color-mix(in oklab, currentColor 45%, transparent);
 }
+
+/*
+ * Fallback de compatibilidade para navegadores com suporte limitado a CSS
+ * moderno (ex.: navegadores de Smart TV que não entendem oklch() ou
+ * color-mix()). Nesses aparelhos, os tokens acima ficam inválidos e os
+ * elementos coloridos (círculos dos ícones, fundos, gradientes, brilhos)
+ * desaparecem. Este bloco redefine os mesmos tokens em sRGB (hex/rgba) SOMENTE
+ * quando o navegador não suporta esses recursos — no Chrome/Edge modernos o
+ * bloco é ignorado, mantendo a aparência idêntica.
+ */
+@supports (not (color: oklch(0 0 0))) or
+  (not (background: color-mix(in oklab, red, blue))) {
+  :root {
+    --background: #070d1a;
+    --foreground: #fcfcfc;
+    --card: #111826;
+    --card-foreground: #fcfcfc;
+    --popover: #111826;
+    --popover-foreground: #fcfcfc;
+    --primary: #e57434;
+    --primary-foreground: #070d1a;
+    --secondary: #1d2433;
+    --secondary-foreground: #fcfcfc;
+    --muted: #1d2433;
+    --muted-foreground: #b1b8c5;
+    --accent: #1f293d;
+    --accent-foreground: #fcfcfc;
+    --destructive: #f52f39;
+    --destructive-foreground: #fcfcfc;
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.12);
+    --ring: #e57434;
+
+    --brand: #ee6d18;
+    --brand-glow: #f88a3d;
+    --blue: #3c91fd;
+    --green: #41ca51;
+    --orange: #f8962d;
+    --purple: #a86bfd;
+    --red: #fd2a37;
+    --yellow: #f1cb1c;
+
+    --surface-gradient: linear-gradient(180deg, #070d1a, #040711);
+
+    --tint-blue-22: rgba(60, 145, 253, 0.22);
+    --tint-green-22: rgba(65, 202, 81, 0.22);
+    --tint-orange-22: rgba(248, 150, 45, 0.22);
+    --tint-purple-22: rgba(168, 107, 253, 0.22);
+    --tint-green-14: rgba(65, 202, 81, 0.14);
+    --tint-purple-18: rgba(168, 107, 253, 0.18);
+    --tint-purple-14: rgba(168, 107, 253, 0.14);
+  }
+
+  /* Superfície dos cards sem color-mix nem oklch */
+  .card-surface {
+    background: linear-gradient(160deg, #131b2b, #0d1420);
+    background-color: #0c1220;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.04),
+      0 18px 40px -24px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Brilho de texto sem color-mix */
+  .glow-text {
+    text-shadow: 0 0 24px rgba(255, 255, 255, 0.45);
+  }
+}
+
