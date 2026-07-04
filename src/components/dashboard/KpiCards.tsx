@@ -15,6 +15,13 @@ const accentVar: Record<string, string> = {
   purple: "var(--purple)",
 };
 
+const accentTint22: Record<string, string> = {
+  blue: "var(--tint-blue-22)",
+  green: "var(--tint-green-22)",
+  orange: "var(--tint-orange-22)",
+  purple: "var(--tint-purple-22)",
+};
+
 function Card({
   accent,
   icon,
@@ -39,7 +46,7 @@ function Card({
       <div className="mb-3 flex items-center gap-2.5">
         <span
           className="grid h-9 w-9 shrink-0 place-items-center rounded-xl"
-          style={{ background: `color-mix(in oklab, ${color} 22%, transparent)`, color }}
+          style={{ background: accentTint22[accent], color }}
         >
           {icon}
         </span>
@@ -90,7 +97,7 @@ export function KpiCards({ m }: { m: Metrics }) {
         </div>
         <div
           className="mt-2 rounded-lg px-3 py-1.5 text-xs"
-          style={{ background: "color-mix(in oklab, var(--green) 14%, transparent)" }}
+          style={{ background: "var(--tint-green-14)" }}
         >
           <span className="text-muted-foreground">
             {m.faltaSemanal > 0 ? "Falta: " : "Acima: "}
@@ -116,7 +123,7 @@ export function KpiCards({ m }: { m: Metrics }) {
         <div
           className="mt-auto rounded-lg px-3 py-2 text-xs font-semibold"
           style={{
-            background: `color-mix(in oklab, ${colorHexFromPercent(m.pctDiario)} 16%, transparent)`,
+            background: `${colorHexFromPercent(m.pctDiario)}29`,
             color: colorHexFromPercent(m.pctDiario),
           }}
         >
@@ -137,14 +144,14 @@ export function KpiCards({ m }: { m: Metrics }) {
             </div>
             <span
               className="grid h-12 w-12 shrink-0 place-items-center rounded-xl"
-              style={{ background: "color-mix(in oklab, var(--purple) 18%, transparent)", color: "var(--purple)" }}
+              style={{ background: "var(--tint-purple-18)", color: "var(--purple)" }}
             >
               <TrendingUp size={24} />
             </span>
           </div>
           <div
             className="rounded-xl px-3 py-2 text-center"
-            style={{ background: "color-mix(in oklab, var(--purple) 14%, transparent)" }}
+            style={{ background: "var(--tint-purple-14)" }}
           >
             <p className="text-[10px] leading-tight text-muted-foreground">Necessário vender</p>
             <p className="font-display text-lg font-bold leading-tight" style={{ color: "var(--purple)" }}>
