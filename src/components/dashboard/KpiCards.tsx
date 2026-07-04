@@ -151,7 +151,7 @@ export function KpiCards({ m }: { m: Metrics }) {
           </div>
           <div
             className="rounded-xl px-3 py-2 text-center"
-            style={{ background: "color-mix(in oklab, var(--purple) 14%, transparent)" }}
+            style={{ background: "var(--tint-purple-14)" }}
           >
             <p className="text-[10px] leading-tight text-muted-foreground">Necessário vender</p>
             <p className="font-display text-lg font-bold leading-tight" style={{ color: "var(--purple)" }}>
