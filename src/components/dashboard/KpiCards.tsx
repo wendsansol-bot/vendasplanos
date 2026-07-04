@@ -46,7 +46,7 @@ function Card({
       <div className="mb-3 flex items-center gap-2.5">
         <span
           className="grid h-9 w-9 shrink-0 place-items-center rounded-xl"
-          style={{ background: `color-mix(in oklab, ${color} 22%, transparent)`, color }}
+          style={{ background: accentTint22[accent], color }}
         >
           {icon}
         </span>
