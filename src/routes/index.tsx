@@ -108,7 +108,7 @@ function Dashboard() {
 
   return (
     <div className="mx-auto flex h-screen max-h-[1080px] w-screen max-w-[1920px] flex-col gap-3 overflow-hidden p-4"
-      style={{ background: "var(--surface-gradient)" }}
+      style={{ background: "var(--surface-gradient)", backgroundColor: "#070b14" }}
     >
       <Header onRefresh={handleRefresh} refreshState={refreshState} statusMessage={statusMessage} />
 
