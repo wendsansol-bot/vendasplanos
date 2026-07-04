@@ -144,7 +144,7 @@ export function KpiCards({ m }: { m: Metrics }) {
             </div>
             <span
               className="grid h-12 w-12 shrink-0 place-items-center rounded-xl"
-              style={{ background: "color-mix(in oklab, var(--purple) 18%, transparent)", color: "var(--purple)" }}
+              style={{ background: "var(--tint-purple-18)", color: "var(--purple)" }}
             >
               <TrendingUp size={24} />
             </span>
