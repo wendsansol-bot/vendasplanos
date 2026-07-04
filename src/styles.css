@@ -208,9 +208,9 @@
       0 18px 40px -24px rgba(0, 0, 0, 0.8);
   }
 
-  /* Brilho de texto sem color-mix */
+  /* Brilho de texto sem color-mix (mantém a cor do próprio texto) */
   .glow-text {
-    text-shadow: 0 0 24px rgba(255, 255, 255, 0.45);
+    text-shadow: 0 0 20px currentColor;
   }
 }
 
