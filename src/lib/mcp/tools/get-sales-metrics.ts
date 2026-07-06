@@ -4,7 +4,6 @@ import {
   defaultFilters,
   fetchSheet,
   formatarMoeda,
-  MESES,
   type Filters,
 } from "@/lib/dashboard";
 import { computeMetrics } from "@/lib/metrics";
