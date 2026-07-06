@@ -212,5 +212,26 @@
   .glow-text {
     text-shadow: 0 0 20px currentColor;
   }
+
+  /*
+   * Botão "Atualizar dados": em navegadores sem color-mix, os modificadores
+   * de opacidade do Tailwind (bg-brand/15, border-brand/40) ficam inválidos e
+   * o texto laranja acaba sobre um fundo laranja opaco, ficando ilegível.
+   * Aqui reaplicamos os mesmos valores em rgba/hex (idênticos ao Chrome).
+   */
+  .refresh-btn {
+    background: rgba(238, 109, 24, 0.15);
+    border-color: rgba(238, 109, 24, 0.4);
+    color: #ee6d18;
+  }
+
+  /*
+   * Brilhos decorativos dos cards: dependem de filter: blur(), não suportado
+   * em alguns navegadores de Smart TV, onde viram círculos sólidos cinzas
+   * sobre os cards. Como são puramente decorativos, ocultamos nesses casos.
+   */
+  .decorative-glow {
+    display: none;
+  }
 }
 

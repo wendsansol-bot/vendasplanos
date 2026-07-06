@@ -40,7 +40,7 @@ function Card({
       style={{ borderTop: `2px solid ${color}` }}
     >
       <div
-        className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-20 blur-2xl transition-opacity group-hover:opacity-40"
+        className="decorative-glow pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full opacity-20 blur-2xl transition-opacity group-hover:opacity-40"
         style={{ background: color }}
       />
       <div className="mb-3 flex items-center gap-2.5">
