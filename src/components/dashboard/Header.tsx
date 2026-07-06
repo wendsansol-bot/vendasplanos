@@ -66,10 +66,12 @@ export function Header({ onRefresh, refreshState, statusMessage }: Props) {
           type="button"
           onClick={onRefresh}
           disabled={refreshState === "loading"}
-          className="flex items-center gap-2 rounded-xl border border-brand/40 bg-brand/15 px-4 py-2.5 text-sm font-semibold text-brand transition-all hover:bg-brand/25 disabled:opacity-70"
+          className="refresh-btn flex items-center gap-2 rounded-xl border border-brand/40 bg-brand/15 px-4 py-2.5 text-sm font-semibold text-brand transition-all hover:bg-brand/25 disabled:opacity-70"
         >
           <RefreshCw size={16} className={refreshState === "loading" ? "animate-spin" : ""} />
-          {refreshState === "loading" ? "Atualizando..." : "Atualizar dados"}
+          <span className="whitespace-nowrap">
+            {refreshState === "loading" ? "Atualizando..." : "Atualizar dados"}
+          </span>
         </button>
       </div>
     </header>
