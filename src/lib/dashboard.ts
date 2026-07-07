@@ -40,7 +40,7 @@ export interface MetaMensal {
  */
 export const METAS_POR_MES: Record<string, { mensal: number; semanal: number }> = {
   "2026-06": { mensal: 40000, semanal: 10000 }, // Junho/2026
-  "2026-07": { mensal: 50000, semanal: 12500 }, // Julho/2026
+  "2026-07": { mensal: 40000, semanal: 10000 }, // Julho/2026
 };
 
 // Meta padrão usada quando o mês selecionado não estiver configurado acima.
