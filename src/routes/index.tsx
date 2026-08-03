@@ -16,6 +16,7 @@ import { GaugeChart } from "@/components/dashboard/GaugeChart";
 import { PlanoRanking } from "@/components/dashboard/PlanoRanking";
 import { WeeklyTable } from "@/components/dashboard/WeeklyTable";
 import { MonthSummary } from "@/components/dashboard/MonthSummary";
+import { OrigemVendas } from "@/components/dashboard/OrigemVendas";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -132,12 +133,15 @@ function Dashboard() {
         </Panel>
       </section>
 
-      <section className="grid min-h-0 flex-1 grid-cols-3 gap-3">
+      <section className="grid min-h-0 flex-1 grid-cols-4 gap-3">
         <Panel>
           <PlanoRanking planos={metrics.planos} />
         </Panel>
         <Panel>
           <WeeklyTable semanas={metrics.semanas} />
+        </Panel>
+        <Panel>
+          <OrigemVendas origens={metrics.origens} />
         </Panel>
         <Panel>
           <MonthSummary m={metrics} />
