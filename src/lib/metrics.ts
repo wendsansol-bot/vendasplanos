@@ -1,5 +1,6 @@
 import {
   getMetasDoMes,
+  ORIGENS,
   INICIO_GRAFICO_POR_MES,
   mesToIndex,
   SEMANAS_POR_MES,
@@ -32,6 +33,16 @@ export interface PlanoRow {
   participacao: number;
 }
 
+export interface OrigemRow {
+  origem: string;
+  qtd: number;
+  faturamento: number;
+  previsto: number;
+  pctPrevisto: number;
+  pctRealizado: number;
+  atingimento: number;
+}
+
 export interface Metrics {
   isSimulated: boolean;
   // Mensal
@@ -56,6 +67,7 @@ export interface Metrics {
   acumulado: AccumPoint[];
   semanas: WeekRow[];
   planos: PlanoRow[];
+  origens: OrigemRow[];
   // Resumo
   ticketMedio: number;
   qtdVendas: number;
@@ -139,6 +151,15 @@ export function makeSimulated(metas: MetaMensal): Metrics {
       { posicao: 3, plano: "Prata", qtd: 7, faturamento: 8500, participacao: 17 },
       { posicao: 4, plano: "Bronze", qtd: 3, faturamento: 3000, participacao: 7 },
     ],
+    origens: ORIGENS.map((o) => ({
+      origem: o.nome,
+      qtd: 0,
+      faturamento: 0,
+      previsto: (desafioMensal * o.pctPrevisto) / 100,
+      pctPrevisto: o.pctPrevisto,
+      pctRealizado: 0,
+      atingimento: 0,
+    })),
     ticketMedio: 3750,
     qtdVendas: 34,
     melhorDiaLabel: "03/06/2025",
@@ -322,6 +343,22 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
       participacao: realizadoMes > 0 ? (p.faturamento / realizadoMes) * 100 : 0,
     }));
 
+  // Origem das vendas — sempre as 4 categorias fixas, mesmo sem vendas.
+  const origens: OrigemRow[] = ORIGENS.map((o) => {
+    const vendas = inMonth.filter((r) => r.origem === o.nome);
+    const faturamento = vendas.reduce((s2, r) => s2 + r.valor, 0);
+    const previsto = (desafioMensal * o.pctPrevisto) / 100;
+    return {
+      origem: o.nome,
+      qtd: vendas.length,
+      faturamento,
+      previsto,
+      pctPrevisto: o.pctPrevisto,
+      pctRealizado: realizadoMes > 0 ? (faturamento / realizadoMes) * 100 : 0,
+      atingimento: previsto > 0 ? (faturamento / previsto) * 100 : 0,
+    };
+  });
+
   // Resumo
   const qtdVendas = inMonth.length;
 
@@ -363,6 +400,7 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
     acumulado,
     semanas,
     planos,
+    origens,
     ticketMedio,
     qtdVendas,
     melhorDiaLabel,
