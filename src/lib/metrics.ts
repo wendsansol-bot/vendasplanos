@@ -1,11 +1,13 @@
 import {
   getMetasDoMes,
+  INICIO_GRAFICO_POR_MES,
   mesToIndex,
   SEMANAS_POR_MES,
   type Filters,
   type MetaMensal,
   type SaleRow,
 } from "./dashboard";
+
 
 export interface AccumPoint {
   dia: number;
@@ -269,17 +271,21 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   inMonth.forEach((r) => {
     perDay[r.date!.getDate()] += r.valor;
   });
+  const startDay =
+    INICIO_GRAFICO_POR_MES[`${y}-${String(m + 1).padStart(2, "0")}`] ?? 1;
+  const spanDays = totalDays - startDay + 1;
   const acumulado: AccumPoint[] = [];
   let acc = 0;
-  for (let d = 1; d <= totalDays; d++) {
+  for (let d = startDay; d <= totalDays; d++) {
     acc += perDay[d];
     acumulado.push({
       dia: d,
-      meta: Math.round((desafioMensal * d) / totalDays),
+      meta: Math.round((desafioMensal * (d - startDay + 1)) / spanDays),
       realizado: d <= today.getDate() ? Math.round(acc) : null,
       hoje: d === today.getDate(),
     });
   }
+
 
   // Evolução semanal
   const semanas: WeekRow[] = ranges.map((w) => {
