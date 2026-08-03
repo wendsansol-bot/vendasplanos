@@ -1,11 +1,13 @@
 import {
   getMetasDoMes,
+  INICIO_GRAFICO_POR_MES,
   mesToIndex,
   SEMANAS_POR_MES,
   type Filters,
   type MetaMensal,
   type SaleRow,
 } from "./dashboard";
+
 
 export interface AccumPoint {
   dia: number;
