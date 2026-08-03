@@ -81,6 +81,12 @@ export const SEMANAS_POR_MES: Record<string, SemanaConfig[]> = {
     { label: "Semana 3", start: [6, 20], end: [6, 25] },
     { label: "Semana 4", start: [6, 27], end: [7, 1] },
   ],
+  "2026-08": [
+    { label: "Semana 1", start: [7, 3], end: [7, 8] },
+    { label: "Semana 2", start: [7, 10], end: [7, 15] },
+    { label: "Semana 3", start: [7, 17], end: [7, 22] },
+    { label: "Semana 4", start: [7, 24], end: [7, 31] },
+  ],
 };
 
 export interface SaleRow {
