@@ -89,6 +89,15 @@ export const SEMANAS_POR_MES: Record<string, SemanaConfig[]> = {
   ],
 };
 
+/**
+ * Primeiro dia exibido no gráfico "Previsto x Realizado Acumulado" por mês.
+ * Usado apenas onde o mês começa em um dia diferente de 1 (ex.: Agosto/2026).
+ */
+export const INICIO_GRAFICO_POR_MES: Record<string, number> = {
+  "2026-08": 3,
+};
+
+
 export interface SaleRow {
   valor: number;
   date: Date | null;
