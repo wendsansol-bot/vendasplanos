@@ -41,6 +41,7 @@ export interface MetaMensal {
 export const METAS_POR_MES: Record<string, { mensal: number; semanal: number }> = {
   "2026-06": { mensal: 40000, semanal: 10000 }, // Junho/2026
   "2026-07": { mensal: 40000, semanal: 10000 }, // Julho/2026
+  "2026-08": { mensal: 50000, semanal: 12500 }, // Agosto/2026
 };
 
 // Meta padrão usada quando o mês selecionado não estiver configurado acima.
@@ -79,6 +80,12 @@ export const SEMANAS_POR_MES: Record<string, SemanaConfig[]> = {
     { label: "Semana 2", start: [6, 13], end: [6, 18] },
     { label: "Semana 3", start: [6, 20], end: [6, 25] },
     { label: "Semana 4", start: [6, 27], end: [7, 1] },
+  ],
+  "2026-08": [
+    { label: "Semana 1", start: [7, 3], end: [7, 8] },
+    { label: "Semana 2", start: [7, 10], end: [7, 15] },
+    { label: "Semana 3", start: [7, 17], end: [7, 22] },
+    { label: "Semana 4", start: [7, 24], end: [7, 31] },
   ],
 };
 
