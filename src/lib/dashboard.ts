@@ -327,13 +327,39 @@ export function parseSheet(csvText: string): SaleRow[] {
   return out;
 }
 
+/** Carrega as vendas direto da tabela leads_plano_manutencao (Supabase externo). */
 export async function fetchSheet(): Promise<SaleRow[]> {
-  const separator = SHEET_CSV_URL.includes("?") ? "&" : "?";
-  const url = `${SHEET_CSV_URL}${separator}cacheBust=${Date.now()}`;
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Falha ao carregar planilha (${res.status})`);
-  const text = await res.text();
-  return parseSheet(text);
+  const PAGE = 1000;
+  const out: SaleRow[] = [];
+
+  for (let from = 0; ; from += PAGE) {
+    const { data, error } = await externalSupabase
+      .from("leads_plano_manutencao")
+      .select("valor, dt_venda, plano, resp_venda, empresa, cidade, pagamento")
+      .range(from, from + PAGE - 1);
+
+    if (error) throw new Error(`Falha ao carregar dados (${error.message})`);
+    const rows = (data ?? []) as Record<string, unknown>[];
+
+    for (const r of rows) {
+      const valor = parseValor(r["valor"]);
+      const date = parseData(r["dt_venda"]);
+      if (valor === 0 && !date) continue;
+      out.push({
+        valor,
+        date,
+        plano: String(r["plano"] ?? "").trim() || "Sem plano",
+        responsavel: String(r["resp_venda"] ?? "").trim(),
+        empresa: String(r["empresa"] ?? "").trim(),
+        cidade: String(r["cidade"] ?? "").trim(),
+        pagamento: String(r["pagamento"] ?? "").trim(),
+      });
+    }
+
+    if (rows.length < PAGE) break;
+  }
+
+  return out;
 }
 
 export async function triggerMakeRefresh(): Promise<void> {
