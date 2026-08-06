@@ -98,39 +98,8 @@ export const INICIO_GRAFICO_POR_MES: Record<string, number> = {
 };
 
 
-/* --------------------------- Origem das vendas --------------------------- */
-
-/**
- * Categorias fixas de origem das vendas e o percentual previsto da meta
- * mensal para cada uma. A tabela sempre exibe as 4 categorias, na ordem
- * abaixo, mesmo quando não houver vendas no período filtrado.
- */
-export const ORIGENS = [
-  { nome: "Tráfego Pago", pctPrevisto: 20 },
-  { nome: "PAP", pctPrevisto: 35 },
-  { nome: "Indicação", pctPrevisto: 40 },
-  { nome: "Outros", pctPrevisto: 5 },
-] as const;
-
-export type OrigemNome = (typeof ORIGENS)[number]["nome"];
-
-/** Classifica o texto bruto da planilha em uma das 4 categorias fixas. */
-export function classificarOrigem(raw: unknown): OrigemNome {
-  const s = String(raw ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .toUpperCase();
-  if (!s) return "Outros";
-  if (/(TRAFEGO|PAGO|ADS|META|FACE|INSTA|GOOGLE|MIDIA)/.test(s)) return "Tráfego Pago";
-  if (/(PAP|PORTA)/.test(s)) return "PAP";
-  if (/(INDICA|REFER)/.test(s)) return "Indicação";
-  return "Outros";
-}
-
 export interface SaleRow {
   valor: number;
-  origem: OrigemNome;
   date: Date | null;
   plano: string;
   responsavel: string;
@@ -337,7 +306,6 @@ export function parseSheet(csvText: string): SaleRow[] {
   const iEmpresa = idx(["EMPRESA"]);
   const iCidade = idx(["CIDADE"]);
   const iPagamento = idx(["PAGAMENTO"]);
-  const iOrigem = idx(["ORIGEM", "ORIGEM_VENDA", "CANAL", "FONTE", "MIDIA"]);
 
   const out: SaleRow[] = [];
   for (let r = 1; r < matrix.length; r++) {
@@ -348,7 +316,6 @@ export function parseSheet(csvText: string): SaleRow[] {
     if (valor === 0 && !date) continue;
     out.push({
       valor,
-      origem: classificarOrigem(iOrigem >= 0 ? cols[iOrigem] : ""),
       date,
       plano: (iPlano >= 0 ? cols[iPlano] : "").trim() || "Sem plano",
       responsavel: (iResp >= 0 ? cols[iResp] : "").trim(),
