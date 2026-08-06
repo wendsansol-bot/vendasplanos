@@ -1,4 +1,6 @@
 // Core data layer for the META DE VENDAS dashboard.
+import { externalSupabase } from "@/lib/external-supabase";
+
 
 export const SHEET_CSV_URL =
   "https://docs.google.com/spreadsheets/d/1HnYDs_jCm67cken5p3tQ3N_3v8NiORsjBNLCwXwypEk/gviz/tq?tqx=out:csv&gid=1638124845";
