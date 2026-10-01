@@ -1,5 +1,7 @@
 import {
   getMetasDoMes,
+  getPeriodo,
+  hasPeriodoCustom,
   INICIO_GRAFICO_POR_MES,
   mesToIndex,
   SEMANAS_POR_MES,
@@ -11,9 +13,21 @@ import {
 
 export interface AccumPoint {
   dia: number;
+  label?: string;
   meta: number;
   realizado: number | null;
   hoje: boolean;
+}
+
+/** Dias restantes (do dia seguinte até `end`, inclusive), sem domingos. */
+function businessDaysUntil(today: Date, end: Date): number {
+  let count = 0;
+  const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+  while (d <= end) {
+    if (d.getDay() !== 0) count++;
+    d.setDate(d.getDate() + 1);
+  }
+  return count;
 }
 
 export interface WeekRow {
@@ -349,15 +363,24 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   const qtdVendasTicket = vendasTicket.length;
   const totalTicket = vendasTicket.reduce((s, r) => s + r.valor, 0);
   const ticketMedio = qtdVendasTicket > 0 ? totalTicket / qtdVendasTicket : 0;
-  let melhorDia = 0;
+  let melhorData: Date | null = null;
   let melhorValor = 0;
-  for (let d = 1; d <= totalDays; d++) {
-    if (perDay[d] > melhorValor) {
-      melhorValor = perDay[d];
-      melhorDia = d;
-    }
+  const diasPeriodo: Date[] = [];
+  for (
+    let d = new Date(periodo.start.getFullYear(), periodo.start.getMonth(), periodo.start.getDate());
+    d <= periodo.end;
+    d.setDate(d.getDate() + 1)
+  ) {
+    diasPeriodo.push(new Date(d));
   }
-  const melhorDiaLabel = melhorDia ? MES_LABEL(new Date(y, m, melhorDia)) : "—";
+  diasPeriodo.forEach((d) => {
+    const v = perDayMap.get(dayKey(d)) ?? 0;
+    if (v > melhorValor) {
+      melhorValor = v;
+      melhorData = d;
+    }
+  });
+  const melhorDiaLabel = melhorData ? MES_LABEL(melhorData) : "—";
 
   return {
     isSimulated: false,
