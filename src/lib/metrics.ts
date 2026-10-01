@@ -220,21 +220,23 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
   const m = mesToIndex(filters.mes);
   const totalDays = new Date(y, m + 1, 0).getDate();
 
-  // Data de referência: dia atual se for o mês corrente; caso contrário,
-  // considera o mês como encerrado (último dia) para o histórico.
-  const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
-  const today = isCurrentMonth ? now : new Date(y, m, totalDays, 23, 59, 59);
+  // Período efetivo do mês (pode diferir do mês civil, ex.: Set/2026 até 03/10).
+  const periodo = getPeriodo(y, m);
+  const custom = hasPeriodoCustom(y, m);
 
-  const inMonth = rows.filter((r) => r.date && r.date.getFullYear() === y && r.date.getMonth() === m);
+  // Data de referência: hoje se estiver dentro do período; caso contrário,
+  // considera o período como encerrado (último dia) para o histórico.
+  const isCurrentPeriod = now >= periodo.start && now <= periodo.end;
+  const today = isCurrentPeriod ? now : new Date(periodo.end);
+  const sameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+  const inMonth = rows.filter((r) => r.date && r.date >= periodo.start && r.date <= periodo.end);
 
   const realizadoMes = inMonth.reduce((s, r) => s + r.valor, 0);
 
   // Metas históricas correspondentes ao mês/ano selecionado.
   const metas = getMetasDoMes(y, m);
-
-  // Sem vendas no mês selecionado: os indicadores devem refletir zero.
-  // (Não reutilizamos dados simulados nem de outros meses.)
-
 
   const desafioMensal = metas.mensal;
   const desafioSemanal = metas.semanal;
@@ -257,34 +259,47 @@ export function computeMetrics(allRows: SaleRow[], filters: Filters): Metrics {
 
   // Hoje
   const realizadoHoje = inMonth
-    .filter((r) => r.date!.getDate() === today.getDate())
+    .filter((r) => sameDay(r.date!, today))
     .reduce((s, r) => s + r.valor, 0);
   const pctDiario = (realizadoHoje / desafioDiario) * 100;
   const difDiario = realizadoHoje - desafioDiario;
 
   // Ritmo
-  const diasUteisRestantes = businessDaysRemaining(today);
+  const diasUteisRestantes = custom
+    ? businessDaysUntil(today, periodo.end)
+    : businessDaysRemaining(today);
   const necessarioPorDia = diasUteisRestantes > 0 ? faltaMensal / diasUteisRestantes : 0;
 
-  // Acumulado diário
-  const perDay = new Array(totalDays + 1).fill(0);
+  // Acumulado diário (percorre o período efetivo, dia a dia)
+  const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  const perDayMap = new Map<string, number>();
   inMonth.forEach((r) => {
-    perDay[r.date!.getDate()] += r.valor;
+    const k = dayKey(r.date!);
+    perDayMap.set(k, (perDayMap.get(k) ?? 0) + r.valor);
   });
   const startDay =
-    INICIO_GRAFICO_POR_MES[`${y}-${String(m + 1).padStart(2, "0")}`] ?? 1;
-  const spanDays = totalDays - startDay + 1;
+    INICIO_GRAFICO_POR_MES[`${y}-${String(m + 1).padStart(2, "0")}`] ?? periodo.start.getDate();
+  const chartStart = new Date(y, m, startDay);
+  const chartEnd = new Date(periodo.end.getFullYear(), periodo.end.getMonth(), periodo.end.getDate());
+  const dias: Date[] = [];
+  for (let d = new Date(chartStart); d <= chartEnd; d.setDate(d.getDate() + 1)) {
+    dias.push(new Date(d));
+  }
+  const spanDays = dias.length;
+  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const acumulado: AccumPoint[] = [];
   let acc = 0;
-  for (let d = startDay; d <= totalDays; d++) {
-    acc += perDay[d];
+  dias.forEach((d, i) => {
+    acc += perDayMap.get(dayKey(d)) ?? 0;
+    const overflow = d.getMonth() !== m;
     acumulado.push({
-      dia: d,
-      meta: Math.round((desafioMensal * (d - startDay + 1)) / spanDays),
-      realizado: d <= today.getDate() ? Math.round(acc) : null,
-      hoje: d === today.getDate(),
+      dia: overflow ? totalDays + d.getDate() : d.getDate(),
+      label: overflow ? `${fmtDay(d.getDate())}/${fmtDay(d.getMonth() + 1)}` : String(d.getDate()),
+      meta: Math.round((desafioMensal * (i + 1)) / spanDays),
+      realizado: d <= todayStart ? Math.round(acc) : null,
+      hoje: sameDay(d, today),
     });
-  }
+  });
 
 
   // Evolução semanal
