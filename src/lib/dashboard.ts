@@ -106,6 +106,38 @@ export const INICIO_GRAFICO_POR_MES: Record<string, number> = {
   "2026-08": 3,
 };
 
+/**
+ * Período efetivo de contabilização por mês (quando difere do mês civil).
+ * start/end no formato [mes0, dia]. Ex.: Setembro/2026 fecha em 03/10/2026,
+ * então Outubro/2026 começa em 04/10/2026.
+ */
+export const PERIODOS_POR_MES: Record<string, { start: [number, number]; end: [number, number] }> = {
+  "2026-09": { start: [8, 1], end: [9, 3] },
+  "2026-10": { start: [9, 4], end: [9, 31] },
+};
+
+/** Retorna início/fim (inclusive) do período efetivo do mês. */
+export function getPeriodo(ano: number, mes0: number): { start: Date; end: Date } {
+  const key = `${ano}-${String(mes0 + 1).padStart(2, "0")}`;
+  const p = PERIODOS_POR_MES[key];
+  if (p) {
+    return {
+      start: new Date(ano, p.start[0], p.start[1]),
+      end: new Date(ano, p.end[0], p.end[1], 23, 59, 59, 999),
+    };
+  }
+  return {
+    start: new Date(ano, mes0, 1),
+    end: new Date(ano, mes0 + 1, 0, 23, 59, 59, 999),
+  };
+}
+
+/** Indica se o mês possui período efetivo customizado. */
+export function hasPeriodoCustom(ano: number, mes0: number): boolean {
+  return `${ano}-${String(mes0 + 1).padStart(2, "0")}` in PERIODOS_POR_MES;
+}
+
+
 
 export interface SaleRow {
   valor: number;
@@ -130,9 +162,19 @@ export interface Filters {
 /** Filtros padrão: mês e ano atuais, demais em "Todos". */
 export function defaultFilters(): Filters {
   const now = new Date();
+  let y = now.getFullYear();
+  let m = now.getMonth();
+  // Se hoje ainda pertence ao fechamento do mês anterior, abre nele.
+  const prevY = m === 0 ? y - 1 : y;
+  const prevM = m === 0 ? 11 : m - 1;
+  const prev = getPeriodo(prevY, prevM);
+  if (now >= prev.start && now <= prev.end) {
+    y = prevY;
+    m = prevM;
+  }
   return {
-    mes: MESES[now.getMonth()],
-    ano: String(now.getFullYear()),
+    mes: MESES[m],
+    ano: String(y),
     responsavel: "Todos",
     empresa: "Todas",
     cidade: "Todas",

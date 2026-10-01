@@ -61,6 +61,7 @@ export function AccumulatedChart({ data }: { data: AccumPoint[] }) {
             <CartesianGrid stroke={GRID} vertical={false} />
             <XAxis
               dataKey="dia"
+              tickFormatter={(v) => data.find((d) => d.dia === v)?.label ?? String(v)}
               tick={{ fill: "#aeb9cc", fontSize: 11 }}
               tickLine={false}
               axisLine={{ stroke: GRID }}
@@ -104,7 +105,7 @@ export function AccumulatedChart({ data }: { data: AccumPoint[] }) {
               dot={{ r: 2.5, fill: GREEN, strokeWidth: 0 }}
               connectNulls
               label={(props: any) => {
-                if (lastReal && props.index === lastReal.dia - 1 && props.value != null) {
+                if (lastReal && props.index === data.indexOf(lastReal) && props.value != null) {
                   return (
                     <text x={props.x + 8} y={props.y} fill={GREEN} fontSize={12} fontWeight={700}>
                       {new Intl.NumberFormat("pt-BR").format(props.value)}
