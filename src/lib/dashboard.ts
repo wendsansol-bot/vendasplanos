@@ -45,6 +45,7 @@ export const METAS_POR_MES: Record<string, { mensal: number; semanal: number }> 
   "2026-07": { mensal: 40000, semanal: 10000 }, // Julho/2026
   "2026-08": { mensal: 50000, semanal: 12500 }, // Agosto/2026
   "2026-09": { mensal: 40000, semanal: 10000 }, // Setembro/2026
+  "2026-10": { mensal: 40000, semanal: 10000 }, // Outubro/2026
 };
 
 // Meta padrão usada quando o mês selecionado não estiver configurado acima.
@@ -96,6 +97,12 @@ export const SEMANAS_POR_MES: Record<string, SemanaConfig[]> = {
     { label: "Semana 3", start: [8, 14], end: [8, 19] },
     { label: "Semana 4", start: [8, 21], end: [8, 30] },
   ],
+  "2026-10": [
+    { label: "Semana 1", start: [9, 5], end: [9, 10] },
+    { label: "Semana 2", start: [9, 12], end: [9, 17] },
+    { label: "Semana 3", start: [9, 19], end: [9, 24] },
+    { label: "Semana 4", start: [9, 26], end: [9, 31] },
+  ],
 };
 
 /**
@@ -104,6 +111,7 @@ export const SEMANAS_POR_MES: Record<string, SemanaConfig[]> = {
  */
 export const INICIO_GRAFICO_POR_MES: Record<string, number> = {
   "2026-08": 3,
+  "2026-10": 5,
 };
 
 /**
