@@ -27,6 +27,8 @@ export const Route = createFileRoute("/")({
           "Dashboard executivo de vendas Sansol — acompanhamento de desafios previsto x realizado em tempo real.",
       },
       { property: "og:title", content: "Meta de Vendas · Previsto x Realizado | Sansol" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       {
         property: "og:description",
         content: "Dashboard executivo de vendas Sansol — desafios mensal, semanal e diário.",
